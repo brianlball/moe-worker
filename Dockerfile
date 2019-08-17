@@ -6,10 +6,31 @@ FROM nrel/openstudio:$OPENSTUDIO_VERSION as base
 # Revision numbers from svn
 ENV REV_JMODELICA 12903
 ENV REV_ASSIMULO 873
-
-# Set environment variables
 ENV SRC_DIR /usr/local/src
-ENV MODELICAPATH /usr/local/JModelica/ThirdParty/MSL
+
+# Define the environmental variables needed by JModelica
+# JModelica.org supports the following environment variables:
+#
+# - JMODELICA_HOME containing the path to the JModelica.org installation
+#   directory (again, without spaces or ~ in the path).
+# - PYTHONPATH containing the path to the directory $JMODELICA_HOME/Python.
+# - JAVA_HOME containing the path to a Java JRE or SDK installation.
+# - IPOPT_HOME containing the path to an Ipopt installation directory.
+# - LD_LIBRARY_PATH containing the path to the $IPOPT_HOME/lib directory
+#   (Linux only.)
+# - MODELICAPATH containing a sequence of paths representing directories
+#   where Modelica libraries are located, separated by colons.
+
+ENV JMODELICA_HOME /usr/local/JModelica
+ENV MODELICAPATH $JMODELICA_HOME/ThirdParty/MSL:/home/developer/modelica
+ENV PYTHONPATH $JMODELICA_HOME/Python
+ENV IPOPT_HOME /usr/local/Ipopt-3.12.4
+ENV CASADI_LIB_HOME $JMODELICA_HOME/ThirdParty/CasADi/lib
+ENV CASADI_INTERFACE_HOME $JMODELICA_HOME/lib/casadi_interface
+ENV SUNDIALS_HOME $JMODELICA_HOME/ThirdParty/Sundials
+ENV LD_LIBRARY_PATH $IPOPT_HOME/lib/:\
+$JMODELICA_HOME/ThirdParty/Sundials/lib:\
+$JMODELICA_HOME/ThirdParty/CasADi/lib
 
 # Avoid warnings
 # debconf: unable to initialize frontend: Dialog
@@ -52,8 +73,9 @@ RUN pip install --upgrade pip
 RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java-8-oracle
 RUN pip install --upgrade jcc==3.5
 
-RUN export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-RUN export JCC_JDK=/usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV JCC_JDK=/usr/lib/jvm/java-8-openjdk-amd64
+ENV SEPARATE_PROCESS_JVM /usr/lib/jvm/java-8-openjdk-amd64/
 
 # Get Install Ipopt and JModelica, and delete source code with is more than 1GB large
 RUN cd $SRC_DIR && \
@@ -107,6 +129,8 @@ RUN python -c 'import json; from notebook.auth import passwd; open("/home/develo
 USER developer
 ENV HOME /home/developer
 RUN mkdir /home/developer/ipynotebooks
+ENV DISPLAY :0.0
+ENV WORKDIR /home/developer
 
 # Avoid warning that Matplotlib is building the font cache using fc-list. This may take a moment.
 # This needs to be towards the end of the script as the command writes data to
