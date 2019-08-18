@@ -128,7 +128,7 @@ RUN python -c 'import json; from notebook.auth import passwd; open("/home/develo
 
 USER developer
 ENV HOME /home/developer
-RUN mkdir /home/developer/ipynotebooks && /home/developer/modelica
+RUN mkdir /home/developer/ipynotebooks && mkdir /home/developer/modelica
 ENV USER developer
 ENV DISPLAY :0.0
 ENV WORKDIR /home/developer
