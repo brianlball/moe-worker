@@ -97,6 +97,7 @@ RUN cd $SRC_DIR && \
     rm -rf $SRC_DIR/JModelica/external/Assimulo && \
     svn export -q -r $REV_ASSIMULO https://svn.jmodelica.org/assimulo/trunk Assimulo && \
     cd $SRC_DIR/JModelica && \
+    grep -rl 'solver_object.output' . | xargs sed -i 's/solver_object.output/solver_object.getOutput/' && \
     rm -rf build && \
     mkdir build && \
     cd $SRC_DIR/JModelica/build && \
