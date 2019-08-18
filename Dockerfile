@@ -22,15 +22,15 @@ ENV SRC_DIR /usr/local/src
 #   where Modelica libraries are located, separated by colons.
 
 ENV JMODELICA_HOME /usr/local/JModelica
-ENV MODELICAPATH $JMODELICA_HOME/ThirdParty/MSL:/home/developer/modelica
-ENV PYTHONPATH $JMODELICA_HOME/Python
 ENV IPOPT_HOME /usr/local/Ipopt-3.12.4
+ENV SUNDIALS_HOME $JMODELICA_HOME/ThirdParty/Sundials
 ENV CASADI_LIB_HOME $JMODELICA_HOME/ThirdParty/CasADi/lib
 ENV CASADI_INTERFACE_HOME $JMODELICA_HOME/lib/casadi_interface
-ENV SUNDIALS_HOME $JMODELICA_HOME/ThirdParty/Sundials
+ENV PYTHONPATH $JMODELICA_HOME/Python/:
 ENV LD_LIBRARY_PATH $IPOPT_HOME/lib/:\
 $JMODELICA_HOME/ThirdParty/Sundials/lib:\
 $JMODELICA_HOME/ThirdParty/CasADi/lib
+ENV MODELICAPATH $JMODELICA_HOME/ThirdParty/MSL:/home/developer/modelica
 
 # Avoid warnings
 # debconf: unable to initialize frontend: Dialog
@@ -128,7 +128,8 @@ RUN python -c 'import json; from notebook.auth import passwd; open("/home/develo
 
 USER developer
 ENV HOME /home/developer
-RUN mkdir /home/developer/ipynotebooks
+RUN mkdir /home/developer/ipynotebooks && /home/developer/modelica
+ENV USER developer
 ENV DISPLAY :0.0
 ENV WORKDIR /home/developer
 
