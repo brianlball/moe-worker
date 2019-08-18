@@ -1,0 +1,1 @@
+grep -rl 'solver_object.output' . | xargs sed -i 's/solver_object.output/solver_object.getOutput/'
