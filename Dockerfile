@@ -69,7 +69,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install jcc-3.0 to avoid error in python -c "import jcc"
-RUN pip install --upgrade pip
+#RUN pip install --upgrade pip
 RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java-8-oracle
 RUN pip install --upgrade jcc==3.5
 
@@ -116,6 +116,7 @@ RUN export uid=1000 gid=1000 && \
     chmod 0440 /etc/sudoers.d/developer && \
     chown ${uid}:${gid} -R /home/developer
 
+#install jupyter notebook for debugging
 # ============ Expose ports ============================================================
 EXPOSE 8888
 
@@ -138,3 +139,14 @@ ENV WORKDIR /home/developer
 # This needs to be towards the end of the script as the command writes data to
 # /home/developer/.cache
 RUN python -c "import matplotlib.pyplot"
+
+#start with no creditials, TODO: make secure for production
+CMD ["jupyter", \
+     "notebook", \
+     "--port=8888", \
+     "--no-browser", \
+     "--ip=0.0.0.0", \
+     "--allow-root", \
+     "--NotebookApp.token=''", \
+     "--NotebookApp.password=''", \
+     "--NotebookApp.iopub_data_rate_limit=1.0e10"]

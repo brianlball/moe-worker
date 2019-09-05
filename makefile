@@ -38,6 +38,7 @@ start-jupyter:
     --env="DISPLAY" \
     --volume="${CURDIR}/tmp/.X11-unix:/tmp/.X11-unix:rw" \
 	  -v ${CURDIR}/ipynotebooks:/home/developer/ipynotebooks \
+    -v ${CURDIR}/../HPF/:/home/developer/modelica/HPF \
 	  -p 127.0.0.1:8888:8888 ${IMG_NAME} \
 	  sh -c 'jupyter notebook --no-browser --ip=0.0.0.0 --port=8888 --notebook-dir=/home/developer/ipynotebooks'
 
